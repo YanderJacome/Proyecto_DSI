@@ -1,0 +1,24 @@
+# Normalizar los finales de línea a LF en el repositorio para todos los archivos de texto
+* text=auto
+
+# Declarar explícitamente que estos archivos son de texto y deben ser normalizados
+*.cs      text diff=csharp
+*.csproj  text
+*.sln     text eol=crlf
+*.html    text
+*.css     text
+*.js      text
+*.json    text
+*.md      text
+
+# Declarar explícitamente que estos archivos son binarios y no deben ser modificados
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.pdf     binary
+*.zip     binary
+*.dll     binary
+*.exe     binary
+*.pdb     binary
