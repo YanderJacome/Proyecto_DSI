@@ -74,7 +74,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-
+// Registrar Facades
+builder.Services.AddScoped<Restaurante.Api.Application.Facades.PedidoFacade>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
