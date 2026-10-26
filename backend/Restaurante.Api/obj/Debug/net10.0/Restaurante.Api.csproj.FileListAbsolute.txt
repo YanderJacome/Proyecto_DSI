@@ -170,3 +170,5 @@ C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\obj\De
 C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\obj\Debug\net10.0\ref\Restaurante.Api.dll
 C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\bin\Debug\net10.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\bin\Debug\net10.0\runtimes\win\lib\net10.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\obj\Debug\net10.0\Restaurante.Api.sourcelink.json
+C:\Users\ASUS\OneDrive\Documentos\Restaurante DSI\backend\Restaurante.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
