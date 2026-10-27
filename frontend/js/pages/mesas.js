@@ -8,13 +8,15 @@ if (!authStore.isAuthenticated()) {
 const user = authStore.getUser();
 if (user) {
     document.getElementById('userName').textContent = `${user.nombre} (${user.rol})`;
+    
+    // Control de visibilidad de menús según el rol
+    if (user.rol !== 'Administrador' && user.rol !== 'Cajero') {
+        document.getElementById('navFacturacion').style.display = 'none';
+    }
+    if (user.rol !== 'Administrador') {
+        document.getElementById('navReportes').style.display = 'none';
+    }
 }
-
-document.getElementById('btnLogout').addEventListener('click', () => {
-    authStore.logout();
-    window.location.href = '/login.html';
-});
-
 const mesasGrid = document.getElementById('mesasGrid');
 
 async function cargarMesas() {

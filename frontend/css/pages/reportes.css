@@ -1,0 +1,16 @@
+.filtro-fecha { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.filtro-fecha input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.kpi-card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border-top: 5px solid #3498db; }
+.kpi-card.ventas { border-top-color: #27ae60; }
+.kpi-card.ticket { border-top-color: #f39c12; }
+.kpi-card h3 { color: #7f8c8d; font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; }
+.kpi-card .valor { font-size: 2.5rem; font-weight: bold; color: #2c3e50; }
+
+.metodos-pago-container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.metodos-pago-container h2 { margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+.metodos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.metodo-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+.metodo-item h4 { color: #555; margin-bottom: 10px; }
+.metodo-item .valor-metodo { font-size: 1.5rem; font-weight: bold; color: #3498db; }
