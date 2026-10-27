@@ -1,0 +1,12 @@
+.caja-container { display: flex; height: calc(100vh - 70px); background: #f4f7f6; }
+.lista-pedidos { flex: 2; padding: 20px; overflow-y: auto; }
+.panel-cobro { flex: 1; min-width: 350px; background: white; padding: 20px; border-left: 2px solid #ddd; display: flex; flex-direction: column; }
+.pedidos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+.pedido-card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
+.pedido-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.pedido-card h3 { margin-bottom: 10px; color: #2c3e50; }
+.pedido-card p { color: #7f8c8d; font-size: 0.9rem; }
+.detalle-cobro { flex: 1; overflow-y: auto; margin: 15px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 10px 0; }
+.detalle-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+.total-cobro { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #27ae60; }
+.form-control { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }

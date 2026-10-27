@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación - Restaurante DSI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/pages/facturacion.css">
+</head>
+<body>
+    <header class="main-header" style="background-color: #8e44ad;">
+        <h1>Caja - Facturación</h1>
+        <div class="user-info">
+            <span id="userName"></span>
+            <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="caja-container">
+        <div class="lista-pedidos">
+            <h2>Pedidos Pendientes por Cobrar</h2>
+            <div id="pedidosPendientes" class="pedidos-grid"></div>
+        </div>
+        
+        <aside class="panel-cobro hidden" id="panelCobro">
+            <h2>Cobrar Pedido <span id="cobrarIdPedido"></span></h2>
+            <div id="detalleCobro" class="detalle-cobro"></div>
+            <div class="total-cobro">
+                <h3>Total a Pagar:</h3>
+                <h2 id="cobrarTotal">$0</h2>
+            </div>
+            
+            <label for="metodoPago">Método de Pago:</label>
+            <select id="metodoPago" class="form-control">
+                <option value="0">Efectivo</option>
+                <option value="1">Tarjeta</option>
+                <option value="2">Transferencia</option>
+            </select>
+            
+            <button id="btnFacturar" class="btn-primary btn-block">Generar Factura y Liberar Mesa</button>
+        </aside>
+    </main>
+
+    <script type="module" src="/js/pages/facturacion.js"></script>
+</body>
+</html>
