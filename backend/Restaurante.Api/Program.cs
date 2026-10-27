@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi; // <-- CAMBIO: Namespace correcto para .NET 10
 using Restaurante.Api.Authentication;
 using Restaurante.Api.Infrastructure.Data;
+using Restaurante.Api.Application.Observers;
+using Restaurante.Api.Hubs;
 
 var contentRoot = Directory.GetCurrentDirectory();
 var frontendPath = Path.GetFullPath(
@@ -71,9 +73,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
             ClockSkew = TimeSpan.Zero
         };
-    });
 
-builder.Services.AddAuthorization();
+        // NUEVO: Leer el token desde la URL para SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/pedidos"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
+// SignalR
+builder.Services.AddSignalR();
+
+// Patrón Observer
+builder.Services.AddSingleton<IPedidoObserver, SignalRPedidoObserver>();
+builder.Services.AddSingleton<PedidoSubject>();
+
+
 // Registrar Facades
 builder.Services.AddScoped<Restaurante.Api.Application.Facades.PedidoFacade>();
 builder.Services.AddCors(options =>
@@ -109,5 +132,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+// Mapear el Hub de SignalR
+app.MapHub<PedidosHub>("/hubs/pedidos");
 app.Run();
