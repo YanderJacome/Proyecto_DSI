@@ -50,7 +50,7 @@ public class PedidosController : ControllerBase
         }
     }
 
-    [HttpGet("mesa/{idMesa}")]
+       [HttpGet("mesa/{idMesa}")]
     public async Task<IActionResult> GetPedidosPorMesa(int idMesa)
     {
         var pedidos = await _db.Pedidos
@@ -61,6 +61,7 @@ public class PedidosController : ControllerBase
             .Select(p => new
             {
                 p.IdPedido,
+                p.IdMesa, // <-- ESTA ES LA LÍNEA QUE FALTABA
                 Estado = p.Estado.ToString(),
                 Total = p.Total,
                 Detalles = p.Detalles.Select(d => new { d.Producto!.Nombre, d.Cantidad })
@@ -83,4 +84,48 @@ public class PedidosController : ControllerBase
             return BadRequest(new { mensaje = ex.Message });
         }
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPedido(int id)
+    {
+        var pedido = await _db.Pedidos
+            .Include(p => p.Detalles).ThenInclude(d => d.Producto)
+            .Where(p => p.IdPedido == id)
+            .Select(p => new
+            {
+                p.IdPedido,
+                p.IdMesa,
+                p.Estado,
+                p.Total,
+                Detalles = p.Detalles.Select(d => new
+                {
+                    d.IdProducto,
+                    d.Cantidad,
+                    d.Observaciones,
+                    d.PrecioUnitario
+                })
+            })
+            .FirstOrDefaultAsync();
+
+        if (pedido == null) return NotFound();
+        return Ok(pedido);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ModificarPedido(int id, [FromBody] ModificarPedidoRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        try
+        {
+            var pedido = await _pedidoFacade.ModificarPedidoAsync(id, request);
+            return Ok(new { mensaje = "Pedido modificado exitosamente.", total = pedido.Total });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
+    }
+
+
 }

@@ -1,10 +1,14 @@
 import { fetchApi } from '../api/apiClient.js';
 import { authStore } from '../auth/authStore.js';
 
+
 if (!authStore.isAuthenticated()) window.location.href = '/login.html';
 
 const user = authStore.getUser();
-if(user) document.getElementById('userName').textContent = `${user.nombre} (${user.rol})`;
+if(user) {
+    document.getElementById('userName').textContent = `${user.nombre} (${user.rol})`;
+    if (user.rol !== 'Administrador') document.getElementById('navUsuarios').style.display = 'none';
+}
 
 document.getElementById('btnLogout').addEventListener('click', () => {
     authStore.logout();

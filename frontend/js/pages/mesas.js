@@ -9,12 +9,12 @@ const user = authStore.getUser();
 if (user) {
     document.getElementById('userName').textContent = `${user.nombre} (${user.rol})`;
     
-    // Control de visibilidad de menús según el rol
     if (user.rol !== 'Administrador' && user.rol !== 'Cajero') {
         document.getElementById('navFacturacion').style.display = 'none';
     }
     if (user.rol !== 'Administrador') {
         document.getElementById('navReportes').style.display = 'none';
+        document.getElementById('navUsuarios').style.display = 'none'; // <-- NUEVA LÍNEA
     }
 }
 const mesasGrid = document.getElementById('mesasGrid');
@@ -82,14 +82,19 @@ async function abrirModalMesa(mesa) {
             return;
         }
 
-        modalPedidosList.innerHTML = pedidos.map(p => `
+                modalPedidosList.innerHTML = pedidos.map(p => `
             <div class="modal-pedido-card">
                 <h4>Pedido #${p.idPedido} - Estado: ${p.estado}</h4>
                 <ul>
                     ${p.detalles.map(d => `<li>${d.cantidad}x ${d.nombre}</li>`).join('')}
                 </ul>
                 <p><strong>Total: $${p.total.toLocaleString('es-CO')}</strong></p>
-                ${p.estado !== 'Facturado' ? `<button class="btn-cancelar-pedido" onclick="cancelarPedido(${p.idPedido})">Cancelar este Pedido</button>` : ''}
+                ${p.estado !== 'Facturado' ? `
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn-cancelar-pedido" style="background-color: #3498db; margin-top:0;" onclick="window.location.href='/pedidos.html?mesaId=${p.idMesa}&pedidoId=${p.idPedido}'">Modificar Pedido</button>
+                        <button class="btn-cancelar-pedido" style="margin-top:0;" onclick="cancelarPedido(${p.idPedido})">Cancelar Pedido</button>
+                    </div>
+                ` : ''}
             </div>
         `).join('');
 

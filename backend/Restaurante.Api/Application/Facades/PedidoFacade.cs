@@ -96,5 +96,55 @@ public class PedidoFacade
         await _subject.NotificarCambioEstadoAsync(pedido.IdPedido, "Cancelado");
     }
 
+    public async Task<Pedido> ModificarPedidoAsync(int idPedido, ModificarPedidoRequest request)
+    {
+        var pedido = await _db.Pedidos
+            .Include(p => p.Detalles)
+            .FirstOrDefaultAsync(p => p.IdPedido == idPedido);
+
+        if (pedido == null) throw new Exception("Pedido no encontrado.");
+
+        // 1. Validar con el Patrón State si el pedido se puede modificar
+        var estadoActual = EstadoPedidoFactory.Crear(pedido.Estado);
+        if (!estadoActual.PuedeModificar())
+            throw new Exception($"El pedido no se puede modificar porque está en estado: {estadoActual.Nombre}.");
+
+        // 2. Eliminar los detalles antiguos
+        _db.DetallePedidos.RemoveRange(pedido.Detalles);
+
+        // 3. Calcular nuevos totales y agregar nuevos detalles
+        decimal nuevoTotal = 0;
+        var nuevosDetalles = new List<DetallePedido>();
+
+        foreach (var item in request.Items)
+        {
+            var producto = await _db.Productos.FindAsync(item.IdProducto);
+            if (producto == null) throw new Exception($"El producto con ID {item.IdProducto} no existe.");
+            if (!producto.Disponible) throw new Exception($"El producto '{producto.Nombre}' no está disponible.");
+
+            var subtotal = producto.Precio * item.Cantidad;
+            nuevoTotal += subtotal;
+
+            nuevosDetalles.Add(new DetallePedido
+            {
+                IdPedido = pedido.IdPedido,
+                IdProducto = producto.IdProducto,
+                Cantidad = item.Cantidad,
+                Observaciones = item.Observaciones,
+                PrecioUnitario = producto.Precio,
+                Subtotal = subtotal
+            });
+        }
+
+        pedido.Total = nuevoTotal;
+        _db.DetallePedidos.AddRange(nuevosDetalles);
+
+        await _db.SaveChangesAsync();
+
+        // 4. Notificar a cocina sobre la modificación
+        await _subject.NotificarCambioEstadoAsync(pedido.IdPedido, "Modificado");
+
+        return pedido;
+    }
 
 }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - Restaurante DSI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/pages/usuarios.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Gestión de Usuarios</h1>
+        <div class="user-info">
+            <a href="/mesas.html" class="nav-link">Mesas</a>
+            <a href="/facturacion.html" class="nav-link">Facturación</a>
+            <a href="/reportes.html" class="nav-link">Reportes</a>
+            <a href="/usuarios.html" class="nav-link" style="background-color: #34495e;">Usuarios</a>
+            <span id="userName" style="margin-left: 15px; font-weight: bold;"></span>
+            <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="header-actions">
+            <h2>Lista de Usuarios</h2>
+            <button id="btnNuevoUsuario" class="btn-primary">+ Nuevo Usuario</button>
+        </div>
+
+        <table class="tabla-usuarios">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="usuariosTbody">
+                <!-- Se carga vía JS -->
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Modal para Crear Usuario -->
+    <div id="modalUsuario" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Crear Nuevo Usuario</h2>
+            <form id="formUsuario">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo Documento</label>
+                        <select id="tipoDocumento">
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Número Documento</label>
+                        <input type="text" id="numeroDocumento" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select id="idRol">
+                            <option value="1">Administrador</option>
+                            <option value="2">Mesero</option>
+                            <option value="3">Cajero</option>
+                            <option value="4">Cocina</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="correo" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="contrasena" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-primary btn-block">Guardar Usuario</button>
+                <div id="errorMsg" class="error-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/js/pages/usuarios.js"></script>
+</body>
+</html>

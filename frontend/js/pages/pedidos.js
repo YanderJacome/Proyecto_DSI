@@ -1,27 +1,26 @@
 import { fetchApi } from '../api/apiClient.js';
 import { authStore } from '../auth/authStore.js';
 
-// Proteger ruta
-if (!authStore.isAuthenticated()) {
-    window.location.href = '/login.html';
-}
+if (!authStore.isAuthenticated()) window.location.href = '/login.html';
 
-// Obtener el ID de la mesa desde la URL (?mesaId=1)
 const urlParams = new URLSearchParams(window.location.search);
 const mesaId = parseInt(urlParams.get('mesaId'));
+const pedidoId = parseInt(urlParams.get('pedidoId')); // NUEVO
 
 if (!mesaId) {
     alert('No se seleccionó una mesa válida.');
     window.location.href = '/mesas.html';
 }
 
-document.getElementById('mesaInfo').textContent = `Mesa N° ${mesaId}`;
+document.getElementById('mesaInfo').textContent = `Mesa N° ${mesaId} ${pedidoId ? '- Modificando Pedido #' + pedidoId : ''}`;
+if(pedidoId) {
+    document.querySelector('h1').textContent = 'Modificar Pedido';
+    document.getElementById('btnConfirmarPedido').textContent = 'Guardar Cambios';
+}
 
-// Estado del carrito
 let carrito = [];
 let productosMenu = [];
 
-// Elementos del DOM
 const productosGrid = document.getElementById('productosGrid');
 const categoriasTabs = document.getElementById('categoriasTabs');
 const carritoItemsDiv = document.getElementById('carritoItems');
@@ -29,24 +28,38 @@ const totalPedidoH2 = document.getElementById('totalPedido');
 const btnConfirmar = document.getElementById('btnConfirmarPedido');
 const errorMsg = document.getElementById('mensajeError');
 
-// Eventos de navegación
 document.getElementById('btnVolver').addEventListener('click', () => window.location.href = '/mesas.html');
-document.getElementById('btnLogout').addEventListener('click', () => {
-    authStore.logout();
-    window.location.href = '/login.html';
-});
+document.getElementById('btnLogout').addEventListener('click', () => { authStore.logout(); window.location.href = '/login.html'; });
 
-// Inicialización
 async function init() {
     try {
         productosMenu = await fetchApi('/productos');
         renderizarCategorias();
         renderizarProductos('Todos');
+
+        // Si es modificación, cargar el pedido existente en el carrito
+        if (pedidoId) {
+            const pedido = await fetchApi(`/pedidos/${pedidoId}`);
+            pedido.detalles.forEach(d => {
+                const prod = productosMenu.find(p => p.idProducto === d.idProducto);
+                if(prod) {
+                    carrito.push({
+                        idProducto: d.idProducto,
+                        nombre: prod.nombre,
+                        precio: d.precioUnitario,
+                        cantidad: d.cantidad,
+                        observaciones: d.observaciones || ""
+                    });
+                }
+            });
+            actualizarCarritoUI();
+        }
     } catch (error) {
         productosGrid.innerHTML = `<p class="error">Error al cargar el menú: ${error.message}</p>`;
     }
 }
 
+// ... (Las funciones renderizarCategorias, renderizarProductos, agregarAlCarrito, actualizarCarritoUI y modificarCantidad quedan EXACTAMENTE IGUAL) ...
 // --- RENDERIZADO DEL MENÚ ---
 
 function renderizarCategorias() {
@@ -174,11 +187,10 @@ btnConfirmar.addEventListener('click', async () => {
     if (carrito.length === 0) return;
 
     btnConfirmar.disabled = true;
-    btnConfirmar.textContent = 'Enviando...';
+    btnConfirmar.textContent = 'Procesando...';
     errorMsg.classList.add('hidden');
 
     const payload = {
-        idMesa: mesaId,
         items: carrito.map(i => ({
             idProducto: i.idProducto,
             cantidad: i.cantidad,
@@ -187,21 +199,30 @@ btnConfirmar.addEventListener('click', async () => {
     };
 
     try {
-        const response = await fetchApi('/pedidos', {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-
-        alert(`¡Pedido #${response.idPedido} registrado exitosamente! Total: $${response.total.toLocaleString('es-CO')}`);
-        window.location.href = '/mesas.html'; // Volver a mesas (debería estar ocupada)
+        if (pedidoId) {
+            // Es una modificación (PUT)
+            const response = await fetchApi(`/pedidos/${pedidoId}`, {
+                method: 'PUT',
+                body: JSON.stringify(payload)
+            });
+            alert(`¡Pedido modificado! Nuevo total: $${response.total.toLocaleString('es-CO')}`);
+        } else {
+            // Es un pedido nuevo (POST)
+            payload.idMesa = mesaId;
+            const response = await fetchApi('/pedidos', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            alert(`¡Pedido #${response.idPedido} registrado! Total: $${response.total.toLocaleString('es-CO')}`);
+        }
+        window.location.href = '/mesas.html';
 
     } catch (error) {
         errorMsg.textContent = error.message;
         errorMsg.classList.remove('hidden');
         btnConfirmar.disabled = false;
-        btnConfirmar.textContent = 'Confirmar Pedido';
+        btnConfirmar.textContent = pedidoId ? 'Guardar Cambios' : 'Confirmar Pedido';
     }
 });
 
-// Arrancar
 init();
