@@ -60,4 +60,41 @@ public class PedidoFacade
 
         return pedido;
     }
+    public async Task CancelarPedidoAsync(int idPedido)
+    {
+        var pedido = await _db.Pedidos
+            .Include(p => p.Mesa)
+            .FirstOrDefaultAsync(p => p.IdPedido == idPedido);
+
+        if (pedido == null) throw new Exception("Pedido no encontrado.");
+
+        // 1. Validar con el Patrón State
+        var estadoActual = EstadoPedidoFactory.Crear(pedido.Estado);
+        if (!estadoActual.PuedeCancelar())
+        {
+            throw new Exception($"El pedido no se puede cancelar porque está en estado: {estadoActual.Nombre}.");
+        }
+
+        // 2. Cambiar estado del pedido
+        pedido.Estado = EstadoPedido.Cancelado;
+
+        // 3. Regla de negocio RN-06: Verificar si hay otros pedidos activos en la misma mesa
+        var otrosPedidosActivos = await _db.Pedidos
+            .AnyAsync(p => p.IdMesa == pedido.IdMesa && 
+                           p.IdPedido != pedido.IdPedido && 
+                           p.Estado != EstadoPedido.Cancelado && 
+                           p.Estado != EstadoPedido.Facturado);
+
+        if (!otrosPedidosActivos && pedido.Mesa != null)
+        {
+            pedido.Mesa.Estado = EstadoMesa.Disponible;
+        }
+
+        await _db.SaveChangesAsync();
+
+        // 4. Notificar a cocina para que elimine el pedido de su pantalla
+        await _subject.NotificarCambioEstadoAsync(pedido.IdPedido, "Cancelado");
+    }
+
+
 }

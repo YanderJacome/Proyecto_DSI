@@ -46,16 +46,67 @@ function renderizarMesas(mesas) {
             <div class="mesa-estado">${mesa.estado}</div>
         `;
         
-        card.addEventListener('click', () => {
+                card.addEventListener('click', async () => {
             if (mesa.estado === 'Disponible') {
                 window.location.href = `/pedidos.html?mesaId=${mesa.idMesa}`;
+            } else if (mesa.estado === 'Ocupada') {
+                await abrirModalMesa(mesa);
             } else {
                 alert(`La mesa ${mesa.numeroMesa} está ${mesa.estado}.`);
             }
         });
-
         mesasGrid.appendChild(card);
     });
 }
 
 cargarMesas();
+// --- LÓGICA DEL MODAL ---
+const modal = document.getElementById('modalMesa');
+const closeModal = document.getElementById('closeModal');
+const modalTitulo = document.getElementById('modalTitulo');
+const modalPedidosList = document.getElementById('modalPedidosList');
+
+closeModal.onclick = () => modal.classList.add('hidden');
+window.onclick = (event) => { if (event.target === modal) modal.classList.add('hidden'); };
+
+async function abrirModalMesa(mesa) {
+    modal.classList.remove('hidden');
+    modalTitulo.textContent = `Mesa ${mesa.numeroMesa} - Pedidos Activos`;
+    modalPedidosList.innerHTML = '<p>Cargando pedidos...</p>';
+
+    try {
+        const pedidos = await fetchApi(`/pedidos/mesa/${mesa.idMesa}`);
+        
+        if (pedidos.length === 0) {
+            modalPedidosList.innerHTML = '<p>No hay pedidos activos.</p>';
+            return;
+        }
+
+        modalPedidosList.innerHTML = pedidos.map(p => `
+            <div class="modal-pedido-card">
+                <h4>Pedido #${p.idPedido} - Estado: ${p.estado}</h4>
+                <ul>
+                    ${p.detalles.map(d => `<li>${d.cantidad}x ${d.nombre}</li>`).join('')}
+                </ul>
+                <p><strong>Total: $${p.total.toLocaleString('es-CO')}</strong></p>
+                ${p.estado !== 'Facturado' ? `<button class="btn-cancelar-pedido" onclick="cancelarPedido(${p.idPedido})">Cancelar este Pedido</button>` : ''}
+            </div>
+        `).join('');
+
+    } catch (error) {
+        modalPedidosList.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+    }
+}
+
+window.cancelarPedido = async (idPedido) => {
+    if (!confirm("¿Está seguro de cancelar este pedido? La acción no se puede deshacer.")) return;
+
+    try {
+        await fetchApi(`/pedidos/${idPedido}/cancelar`, { method: 'POST' });
+        alert("Pedido cancelado. La mesa puede haber sido liberada.");
+        modal.classList.add('hidden');
+        cargarMesas(); // Recargar el mapa de mesas
+    } catch (error) {
+        alert("Error al cancelar: " + error.message);
+    }
+};

@@ -72,3 +72,16 @@ document.getElementById('btnConsultar').addEventListener('click', () => {
 
 // Carga inicial
 cargarReporte(hoy);
+document.getElementById('btnExportar').addEventListener('click', () => {
+    // Oculta los botones de la pantalla temporalmente para que no salgan en el PDF
+    const botones = document.querySelectorAll('button, input, .nav-link');
+    botones.forEach(b => b.style.display = 'none');
+    
+    // Abre el diálogo de impresión (donde el usuario elige "Guardar como PDF")
+    window.print();
+    
+    // Restaura los botones después de imprimir
+    setTimeout(() => {
+        botones.forEach(b => b.style.display = '');
+    }, 1000);
+});
