@@ -85,3 +85,70 @@ document.getElementById('btnExportar').addEventListener('click', () => {
         botones.forEach(b => b.style.display = '');
     }, 1000);
 });
+
+// --- LÓGICA MENSUAL (HU-10) ---
+const mesSelect = document.getElementById('mesSelect');
+const anioSelect = document.getElementById('anioSelect');
+const kpiMensual = document.getElementById('kpiMensual');
+const fechaActual = new Date();
+
+// 1. Llenar los selectores de Mes y Año
+const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+meses.forEach((m, i) => {
+    const opt = document.createElement('option');
+    opt.value = i + 1;
+    opt.textContent = m;
+    if (i === fechaActual.getMonth()) opt.selected = true; // Selecciona el mes actual por defecto
+    mesSelect.appendChild(opt);
+});
+
+// Llenar años (del actual hacia atrás)
+for (let i = fechaActual.getFullYear(); i >= 2024; i--) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    anioSelect.appendChild(opt);
+}
+
+// 2. Función para consultar el backend
+async function cargarReporteMensual() {
+    const mes = mesSelect.value;
+    const anio = anioSelect.value;
+    
+    try {
+        kpiMensual.innerHTML = '<p>Cargando...</p>';
+        
+        // Hacemos la petición al endpoint que acabamos de crear en el backend
+        const data = await fetchApi(`/reportes/ventas-mensuales?mes=${mes}&anio=${anio}`);
+        
+        // Lógica de colores para la variación
+        const colorVariacion = data.variacionPorcentual >= 0 ? '#27ae60' : '#e74c3c';
+        const iconoVariacion = data.variacionPorcentual >= 0 ? '↑' : '↓';
+
+        kpiMensual.innerHTML = `
+            <div class="kpi-card">
+                <h3>Total Ingresos (${data.periodo})</h3>
+                <div class="valor">$${data.totalMes.toLocaleString('es-CO')}</div>
+            </div>
+            <div class="kpi-card">
+                <h3>Mes Anterior</h3>
+                <div class="valor" style="color: #7f8c8d;">$${data.totalMesAnterior.toLocaleString('es-CO')}</div>
+            </div>
+            <div class="kpi-card" style="border-top-color: ${colorVariacion};">
+                <h3>Variación vs Anterior</h3>
+                <div class="valor" style="color: ${colorVariacion};">
+                    ${iconoVariacion} ${Math.abs(data.variacionPorcentual)}%
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        kpiMensual.innerHTML = `<p class="error">Error al cargar resumen: ${error.message}</p>`;
+    }
+}
+
+// 3. Escuchar cuando el usuario cambie de mes o año
+mesSelect.addEventListener('change', cargarReporteMensual);
+anioSelect.addEventListener('change', cargarReporteMensual);
+
+// 4. Hacer la carga inicial apenas se abra la página
+cargarReporteMensual();

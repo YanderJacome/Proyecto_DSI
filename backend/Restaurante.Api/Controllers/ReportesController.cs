@@ -59,4 +59,46 @@ public class ReportesController : ControllerBase
             ventasPorMetodo = ventasPorMetodo
         });
     }
+
+        [HttpGet("ventas-mensuales")]
+    public async Task<IActionResult> GetVentasMensuales([FromQuery] int? anio, [FromQuery] int? mes)
+    {
+        var anioConsulta = anio ?? DateTime.UtcNow.Year;
+        var mesConsulta = mes ?? DateTime.UtcNow.Month;
+
+        var inicioMes = new DateTime(anioConsulta, mesConsulta, 1);
+        var finMes = inicioMes.AddMonths(1).AddDays(-1);
+        var inicioMesAnterior = inicioMes.AddMonths(-1);
+        var finMesAnterior = inicioMes.AddDays(-1);
+
+        // Ventas del mes consultado
+        var facturasMes = await _db.Facturas
+            .Where(f => f.Fecha >= inicioMes && f.Fecha <= finMes)
+            .ToListAsync();
+
+        // Ventas del mes anterior
+        var facturasMesAnterior = await _db.Facturas
+            .Where(f => f.Fecha >= inicioMesAnterior && f.Fecha <= finMesAnterior)
+            .ToListAsync();
+
+        var totalMes = facturasMes.Sum(f => f.Total);
+        var totalMesAnterior = facturasMesAnterior.Sum(f => f.Total);
+        
+        // Variación porcentual
+        double variacion = 0;
+        if (totalMesAnterior > 0)
+        {
+            variacion = (double)((totalMes - totalMesAnterior) / totalMesAnterior) * 100;
+        }
+
+        return Ok(new
+        {
+            periodo = $"{mesConsulta}/{anioConsulta}",
+            totalMes = totalMes,
+            totalMesAnterior = totalMesAnterior,
+            variacionPorcentual = Math.Round(variacion, 2),
+            cantidadPedidos = facturasMes.Count,
+            ticketPromedio = facturasMes.Count > 0 ? totalMes / facturasMes.Count : 0
+        });
+    }
 }

@@ -8,26 +8,27 @@
     <link rel="stylesheet" href="/css/pages/reportes.css">
 </head>
 <body>
-    <    <header class="main-header" style="background-color: #2c3e50;">
+    <header class="main-header" style="background-color: #2c3e50;">
         <h1>Reporte de Ventas</h1>
         <div class="user-info">
             <a href="/mesas.html" class="nav-link">Mesas</a>
-            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a> <!-- NUEVO -->
-            <span id="userName"></span>
+            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a>
+            <span id="userName" style="margin-left: 15px; font-weight: bold;"></span>
             <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
         </div>
     </header>
 
     <main class="container">
+        <!-- SECCIÓN DIARIA -->
         <div class="filtro-fecha">
             <label for="fechaReporte">Seleccionar Fecha:</label>
             <input type="date" id="fechaReporte">
             <button id="btnConsultar">Consultar</button>
-            <button id="btnExportar" style="background-color: #e74c3c;">Exportar a PDF</button>v
+            <button id="btnExportar" style="background-color: #e74c3c;">Exportar a PDF</button>
         </div>
 
         <div class="kpi-grid" id="kpiContainer">
-            <!-- Aquí se cargarán las tarjetas de totales -->
+            <!-- Aquí se cargarán las tarjetas de totales diarios -->
             <p>Cargando datos...</p>
         </div>
 
@@ -35,6 +36,30 @@
             <h2>Distribución por Método de Pago</h2>
             <div id="metodosPago" class="metodos-grid">
                 <!-- Aquí irán los métodos de pago -->
+            </div>
+        </div>
+
+        <!-- NUEVA SECCIÓN MENSUAL (HU-10) -->
+        <div class="metodos-pago-container" style="margin-top: 30px; border-top: 5px solid #8e44ad;">
+            <h2>Resumen del Mes</h2>
+            
+            <div class="filtro-mes" style="margin-bottom: 20px; display: flex; gap: 15px;">
+                <div>
+                    <label for="mesSelect" style="font-weight: bold; color: #555;">Mes:</label>
+                    <select id="mesSelect" class="form-control" style="width: auto; display: inline-block; margin-left: 10px;">
+                        <!-- Opciones generadas por JS -->
+                    </select>
+                </div>
+                <div>
+                    <label for="anioSelect" style="font-weight: bold; color: #555;">Año:</label>
+                    <select id="anioSelect" class="form-control" style="width: auto; display: inline-block; margin-left: 10px;">
+                        <!-- Opciones generadas por JS -->
+                    </select>
+                </div>
+            </div>
+            
+            <div class="kpi-grid" id="kpiMensual">
+                <p>Cargando datos mensuales...</p>
             </div>
         </div>
     </main>
