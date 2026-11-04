@@ -70,20 +70,13 @@ document.getElementById('btnConsultar').addEventListener('click', () => {
     cargarReporte(fechaInput.value);
 });
 
+
 // Carga inicial
 cargarReporte(hoy);
+
+// Exportar a PDF usando el CSS de impresión
 document.getElementById('btnExportar').addEventListener('click', () => {
-    // Oculta los botones de la pantalla temporalmente para que no salgan en el PDF
-    const botones = document.querySelectorAll('button, input, .nav-link');
-    botones.forEach(b => b.style.display = 'none');
-    
-    // Abre el diálogo de impresión (donde el usuario elige "Guardar como PDF")
     window.print();
-    
-    // Restaura los botones después de imprimir
-    setTimeout(() => {
-        botones.forEach(b => b.style.display = '');
-    }, 1000);
 });
 
 // --- LÓGICA MENSUAL (HU-10) ---

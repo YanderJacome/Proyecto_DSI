@@ -8,39 +8,50 @@
     <link rel="stylesheet" href="/css/pages/usuarios.css">
 </head>
 <body>
+    <!-- HEADER UNIFICADO -->
     <header class="main-header">
-        <h1>Gestión de Usuarios</h1>
-        <div class="user-info">
+        <div class="header-brand">
+            <h1>👥 Gestión de Usuarios</h1>
+        </div>
+        
+        <nav class="header-nav">
             <a href="/mesas.html" class="nav-link">Mesas</a>
             <a href="/facturacion.html" class="nav-link">Facturación</a>
             <a href="/reportes.html" class="nav-link">Reportes</a>
-            <a href="/usuarios.html" class="nav-link" style="background-color: #34495e;">Usuarios</a>
-            <span id="userName" style="margin-left: 15px; font-weight: bold;"></span>
-            <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
+            <a href="/usuarios.html" class="nav-link active">Usuarios</a>
+        </nav>
+
+        <div class="header-user">
+            <span id="userName" class="user-badge"></span>
+            <button id="btnLogout" class="btn-logout">Salir</button>
         </div>
     </header>
 
     <main class="container">
-        <div class="header-actions">
-            <h2>Lista de Usuarios</h2>
-            <button id="btnNuevoUsuario" class="btn-primary">+ Nuevo Usuario</button>
-        </div>
+        <div class="dashboard-section">
+            <div class="header-actions">
+                <h2>Lista de Usuarios del Sistema</h2>
+                <button id="btnNuevoUsuario" class="btn-primary">+ Nuevo Usuario</button>
+            </div>
 
-        <table class="tabla-usuarios">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Documento</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="usuariosTbody">
-                <!-- Se carga vía JS -->
-            </tbody>
-        </table>
+            <div class="table-responsive">
+                <table class="tabla-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Documento</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTbody">
+                        <!-- Se carga vía JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
     <!-- Modal para Crear Usuario -->
@@ -52,7 +63,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nombre Completo</label>
-                        <input type="text" id="nombre" required>
+                        <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
                     </div>
                     <div class="form-group">
                         <label>Tipo Documento</label>
@@ -66,7 +77,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Número Documento</label>
-                        <input type="text" id="numeroDocumento" required>
+                        <input type="text" id="numeroDocumento" required placeholder="Ej. 10203040">
                     </div>
                     <div class="form-group">
                         <label>Rol</label>
@@ -80,11 +91,11 @@
                 </div>
                 <div class="form-group">
                     <label>Correo Electrónico</label>
-                    <input type="email" id="correo" required>
+                    <input type="email" id="correo" required placeholder="correo@restaurante.com">
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" id="contrasena" minlength="6" required>
+                    <input type="password" id="contrasena" minlength="6" required placeholder="Mínimo 6 caracteres">
                 </div>
                 <button type="submit" class="btn-primary btn-block">Guardar Usuario</button>
                 <div id="errorMsg" class="error-message hidden"></div>

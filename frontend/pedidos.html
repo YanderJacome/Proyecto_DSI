@@ -9,44 +9,54 @@
 </head>
 <body>
     <header class="main-header">
-        <div>
-            <h1>Registrar Pedido</h1>
-            <span id="mesaInfo" class="mesa-info">Mesa: Cargando...</span>
+        <div class="header-brand">
+            <h1 id="tituloPrincipal">📝 Registrar Pedido</h1>
+            <span id="mesaInfo" class="mesa-badge">Mesa: Cargando...</span>
         </div>
-        <div class="user-info">
-            <button id="btnVolver" class="btn-secondary">Volver a Mesas</button>
-            <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
+        <div class="header-user">
+            <button id="btnVolver" class="btn-secondary">← Volver a Mesas</button>
+            <button id="btnLogout" class="btn-logout">Cerrar Sesión</button>
         </div>
     </header>
 
     <main class="pedido-container">
         <!-- Columna Izquierda: Menú -->
         <section class="menu-section">
-            <h2>Menú</h2>
-            <div id="categoriasTabs" class="categorias-tabs">
-                <!-- Las categorías se cargarán aquí -->
+            <div class="menu-header">
+                <h2>Menú del Restaurante</h2>
+                <div id="categoriasTabs" class="categorias-tabs">
+                    <!-- Las categorías se cargarán aquí -->
+                </div>
             </div>
+            
             <div id="productosGrid" class="productos-grid">
                 <!-- Los productos se cargarán aquí -->
+                <p class="loading-text">Cargando menú...</p>
             </div>
         </section>
 
         <!-- Columna Derecha: Carrito -->
         <aside class="carrito-section">
-            <h2>Orden Actual</h2>
+            <h2>🛒 Orden Actual</h2>
+            
             <div id="carritoItems" class="carrito-items">
-                <p class="empty-cart">No hay productos agregados.</p>
+                <div class="empty-cart">
+                    <span style="font-size: 3rem;">🍽️</span>
+                    <p>No hay productos agregados.</p>
+                </div>
             </div>
             
-            <div class="carrito-total">
-                <h3>Total:</h3>
-                <h2 id="totalPedido">$0</h2>
+            <div class="carrito-footer">
+                <div class="carrito-total">
+                    <span>Total a Pagar:</span>
+                    <h2 id="totalPedido">$0</h2>
+                </div>
+                
+                <button id="btnConfirmarPedido" class="btn-confirmar" disabled>
+                    Confirmar Pedido
+                </button>
+                <div id="mensajeError" class="error-message hidden"></div>
             </div>
-            
-            <button id="btnConfirmarPedido" class="btn-primary btn-block" disabled>
-                Confirmar Pedido
-            </button>
-            <div id="mensajeError" class="error-message hidden"></div>
         </aside>
     </main>
 
