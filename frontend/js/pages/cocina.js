@@ -97,7 +97,14 @@ function renderizarTablero() {
             contenedores[pedido.estado].appendChild(card);
         }
     });
+// NUEVO: Actualizar contadores
+    document.getElementById('count-enviado').textContent = document.getElementById('col-enviado').children.length;
+    document.getElementById('count-preparacion').textContent = document.getElementById('col-preparacion').children.length;
+    document.getElementById('count-listo').textContent = document.getElementById('col-listo').children.length;
 }
+
+
+
 
 // 4. Cambiar Estado (HU-08)
 window.cambiarEstado = async (id) => {

@@ -31,7 +31,7 @@ function renderizarPedidos(pedidos) {
     container.innerHTML = '';
 
     if (pedidos.length === 0) {
-        container.innerHTML = '<p style="color: #7f8c8d;">No hay pedidos pendientes por cobrar.</p>';
+        container.innerHTML = '<p style="color: #7f8c8d; font-size: 1.1rem;">No hay pedidos pendientes por cobrar en este momento.</p>';
         return;
     }
 
@@ -39,9 +39,17 @@ function renderizarPedidos(pedidos) {
         const card = document.createElement('div');
         card.className = 'pedido-card';
         card.innerHTML = `
-            <h3>Mesa ${p.numeroMesa} (Pedido #${p.idPedido})</h3>
-            <p>Estado: <strong>${p.estado}</strong></p>
-            <p>Total: <strong>$${p.total.toLocaleString('es-CO')}</strong></p>
+            <h3>
+                Mesa ${p.numeroMesa}
+                <span class="badge-estado">${p.estado}</span>
+            </h3>
+            <div class="info-row">
+                <span>Pedido #${p.idPedido}</span>
+            </div>
+            <div class="info-row" style="margin-top: 15px;">
+                <span>Total:</span>
+                <strong>$${p.total.toLocaleString('es-CO')}</strong>
+            </div>
         `;
         card.onclick = () => seleccionarPedido(p);
         container.appendChild(card);

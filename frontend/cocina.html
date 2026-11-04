@@ -3,32 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cocina - Restaurante DSI</title>
+    <title>Monitor de Cocina - Restaurante DSI</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/pages/cocina.css">
     <!-- Cliente de SignalR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 </head>
 <body>
-    <header class="main-header" style="background-color: #d35400;">
-        <h1>Monitor de Cocina</h1>
-        <div class="user-info">
-            <span id="userName"></span>
-            <button id="btnLogout" style="background-color: #c0392b;">Cerrar Sesión</button>
+    <header class="main-header cocina-header">
+        <div class="header-brand">
+            <h1>👨‍🍳 Monitor de Cocina</h1>
+        </div>
+        <div class="header-user">
+            <span id="userName" class="user-badge"></span>
+            <button id="btnLogout" class="btn-logout">Salir</button>
         </div>
     </header>
 
     <main class="cocina-board">
-        <div class="columna">
-            <h2>🔔 Nuevos Pedidos</h2>
+        <div class="columna col-nuevos">
+            <h2>🔔 Nuevos Pedidos <span id="count-enviado" class="badge-counter">0</span></h2>
             <div id="col-enviado" class="pedidos-container"></div>
         </div>
-        <div class="columna">
-            <h2>🍳 En Preparación</h2>
+        <div class="columna col-preparacion">
+            <h2>🍳 En Preparación <span id="count-preparacion" class="badge-counter">0</span></h2>
             <div id="col-preparacion" class="pedidos-container"></div>
         </div>
-        <div class="columna">
-            <h2>✅ Listos para Servir</h2>
+        <div class="columna col-listos">
+            <h2>✅ Listos para Servir <span id="count-listo" class="badge-counter">0</span></h2>
             <div id="col-listo" class="pedidos-container"></div>
         </div>
     </main>

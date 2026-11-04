@@ -8,33 +8,42 @@
     <link rel="stylesheet" href="/css/pages/mesas.css">
 </head>
 <body>
+    <!-- HEADER MODERNO -->
     <header class="main-header">
-        <h1>Gestión de Mesas</h1>
-                <div class="user-info">
-            <a href="/mesas.html" class="nav-link">Mesas</a>
+        <div class="header-brand">
+            <h1>🍽️ Gestión de Mesas</h1>
+        </div>
+        
+        <nav class="header-nav">
+            <a href="/mesas.html" class="nav-link active">Mesas</a>
             <a href="/facturacion.html" id="navFacturacion" class="nav-link">Facturación</a>
             <a href="/reportes.html" id="navReportes" class="nav-link">Reportes</a>
-            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a> <!-- NUEVO -->
-            
-            <span id="userName" style="margin-left: 15px; font-weight: bold;"></span>
-            <button id="btnLogout">Cerrar Sesión</button>
+            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a>
+        </nav>
+
+        <div class="header-user">
+            <span id="userName" class="user-badge"></span>
+            <button id="btnLogout" class="btn-logout">Salir</button>
         </div>
     </header>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="container">
-        <div class="leyenda">
-            <div class="leyenda-item"><span class="color-box verde"></span> Disponible</div>
-            <div class="leyenda-item"><span class="color-box rojo"></span> Ocupada</div>
-            <div class="leyenda-item"><span class="color-box amarillo"></span> Reservada</div>
+        <div class="dashboard-panel">
+            <h2>Mapa del Salón</h2>
+            <div class="leyenda">
+                <div class="leyenda-item"><span class="color-box verde"></span> Disponible</div>
+                <div class="leyenda-item"><span class="color-box rojo"></span> Ocupada</div>
+                <div class="leyenda-item"><span class="color-box amarillo"></span> Reservada</div>
+            </div>
         </div>
         
         <div id="mesasGrid" class="mesas-grid">
-            <p>Cargando mesas...</p>
+            <p class="loading-text">Cargando mesas...</p>
         </div>
     </main>
 
-    <script type="module" src="/js/pages/mesas.js"></script>
-        <!-- Modal para gestionar mesa ocupada -->
+    <!-- MODAL (Oculto por defecto) -->
     <div id="modalMesa" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" id="closeModal">&times;</span>
@@ -42,5 +51,7 @@
             <div id="modalPedidosList" class="modal-list"></div>
         </div>
     </div>
+
+    <script type="module" src="/js/pages/mesas.js"></script>
 </body>
 </html>

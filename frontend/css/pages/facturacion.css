@@ -1,12 +1,193 @@
-.caja-container { display: flex; height: calc(100vh - 70px); background: #f4f7f6; }
-.lista-pedidos { flex: 2; padding: 20px; overflow-y: auto; }
-.panel-cobro { flex: 1; min-width: 350px; background: white; padding: 20px; border-left: 2px solid #ddd; display: flex; flex-direction: column; }
-.pedidos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
-.pedido-card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
-.pedido-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-.pedido-card h3 { margin-bottom: 10px; color: #2c3e50; }
-.pedido-card p { color: #7f8c8d; font-size: 0.9rem; }
-.detalle-cobro { flex: 1; overflow-y: auto; margin: 15px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 10px 0; }
-.detalle-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
-.total-cobro { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #27ae60; }
-.form-control { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+/* =========================================
+   HEADER Y NAVEGACIÓN (Igual que en las otras pantallas)
+   ========================================= */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e272e;
+    padding: 15px 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-brand h1 { margin: 0; font-size: 1.5rem; color: #ecf0f1; }
+.header-nav { display: flex; gap: 10px; background: rgba(255, 255, 255, 0.05); padding: 5px; border-radius: 8px; }
+.nav-link { color: #bdc3c7; text-decoration: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+.nav-link:hover { background-color: rgba(255, 255, 255, 0.1); color: white; }
+.nav-link.active { background-color: #8e44ad; color: white; box-shadow: 0 2px 10px rgba(142, 68, 173, 0.4); }
+.header-user { display: flex; align-items: center; gap: 15px; }
+.user-badge { color: #ecf0f1; font-size: 0.9rem; font-weight: bold; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; }
+.btn-logout { background-color: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.btn-logout:hover { background-color: #e74c3c; color: white; }
+
+/* =========================================
+   LAYOUT PRINCIPAL (Dos columnas)
+   ========================================= */
+.caja-container {
+    display: flex;
+    height: calc(100vh - 65px);
+    background-color: #f0f2f5;
+    overflow: hidden;
+}
+
+/* COLUMNA IZQUIERDA: PEDIDOS PENDIENTES */
+.lista-pedidos {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.panel-title h2 { margin: 0 0 5px 0; color: #2c3e50; font-size: 1.5rem; }
+.panel-title .hint { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; display: block; }
+
+.pedidos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Tarjetas de pedidos (Tipo recibo) */
+.pedido-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-top: 5px solid #3498db;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.pedido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-top-color: #2980b9;
+}
+
+.pedido-card h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pedido-card .badge-estado {
+    font-size: 0.7rem;
+    background: #f1c40f;
+    color: #333;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
+.pedido-card .info-row {
+    display: flex;
+    justify-content: space-between;
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+.pedido-card .info-row strong { color: #27ae60; font-size: 1.1rem; }
+
+/* =========================================
+   COLUMNA DERECHA: PANEL DE COBRO (TICKET)
+   ========================================= */
+.panel-cobro {
+    width: 400px;
+    min-width: 350px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    z-index: 10;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.ticket-header {
+    background: #8e44ad;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.ticket-header h2 { margin: 0 0 5px 0; font-size: 1.3rem; letter-spacing: 1px; }
+.ticket-header .pedido-ref { font-size: 0.9rem; opacity: 0.8; font-weight: bold; }
+
+.detalle-cobro {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fdfdfd;
+}
+
+.detalle-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #34495e;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 5px;
+}
+
+.detalle-item span:last-child { font-weight: bold; }
+
+.cobro-footer {
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 2px dashed #ddd;
+}
+
+.total-cobro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #27ae60;
+}
+.total-cobro span { font-size: 1.1rem; font-weight: bold; color: #2c3e50; }
+.total-cobro h2 { margin: 0; font-size: 2rem; }
+
+.metodo-pago-group { margin-bottom: 20px; }
+.metodo-pago-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50; }
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #bdc3c7;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+    background-color: white;
+}
+.form-control:focus { border-color: #8e44ad; }
+
+.btn-facturar {
+    width: 100%;
+    padding: 15px;
+    background: #27ae60;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+}
+.btn-facturar:hover { background: #219150; transform: translateY(-2px); }
+.btn-facturar:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.hidden { display: none !important; }

@@ -3,43 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facturación - Restaurante DSI</title>
+    <title>Caja - Facturación</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/pages/facturacion.css">
 </head>
 <body>
-        <header class="main-header" style="background-color: #8e44ad;">
-        <h1>Caja - Facturación</h1>
-        <div class="user-info">
+    <!-- HEADER UNIFICADO -->
+    <header class="main-header">
+        <div class="header-brand">
+            <h1>💳 Caja - Facturación</h1>
+        </div>
+        
+        <nav class="header-nav">
             <a href="/mesas.html" class="nav-link">Mesas</a>
-            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a> <!-- NUEVO -->
-            <span id="userName"></span>
-            <button id="btnLogout" class="btn-danger">Cerrar Sesión</button>
+            <a href="/facturacion.html" class="nav-link active">Facturación</a>
+            <a href="/reportes.html" id="navReportes" class="nav-link">Reportes</a>
+            <a href="/usuarios.html" id="navUsuarios" class="nav-link">Usuarios</a>
+        </nav>
+
+        <div class="header-user">
+            <span id="userName" class="user-badge"></span>
+            <button id="btnLogout" class="btn-logout">Salir</button>
         </div>
     </header>
 
     <main class="caja-container">
-        <div class="lista-pedidos">
-            <h2>Pedidos Pendientes por Cobrar</h2>
-            <div id="pedidosPendientes" class="pedidos-grid"></div>
-        </div>
-        
-        <aside class="panel-cobro hidden" id="panelCobro">
-            <h2>Cobrar Pedido <span id="cobrarIdPedido"></span></h2>
-            <div id="detalleCobro" class="detalle-cobro"></div>
-            <div class="total-cobro">
-                <h3>Total a Pagar:</h3>
-                <h2 id="cobrarTotal">$0</h2>
+        <!-- COLUMNA IZQUIERDA: COLA DE PEDIDOS -->
+        <section class="lista-pedidos">
+            <div class="panel-title">
+                <h2>Pedidos Pendientes por Cobrar</h2>
+                <span class="hint">Haz clic en un pedido para procesar el pago</span>
             </div>
             
-            <label for="metodoPago">Método de Pago:</label>
-            <select id="metodoPago" class="form-control">
-                <option value="0">Efectivo</option>
-                <option value="1">Tarjeta</option>
-                <option value="2">Transferencia</option>
-            </select>
+            <div id="pedidosPendientes" class="pedidos-grid">
+                <p class="loading-text">Cargando pedidos...</p>
+            </div>
+        </section>
+        
+        <!-- COLUMNA DERECHA: PANEL DE COBRO -->
+        <aside class="panel-cobro hidden" id="panelCobro">
+            <div class="ticket-header">
+                <h2>Ticket de Venta</h2>
+                <span class="pedido-ref" id="cobrarIdPedido"></span>
+            </div>
             
-            <button id="btnFacturar" class="btn-primary btn-block">Generar Factura y Liberar Mesa</button>
+            <div id="detalleCobro" class="detalle-cobro">
+                <!-- Los productos se cargan por JS -->
+            </div>
+            
+            <div class="cobro-footer">
+                <div class="total-cobro">
+                    <span>Total a Pagar:</span>
+                    <h2 id="cobrarTotal">$0</h2>
+                </div>
+                
+                <div class="metodo-pago-group">
+                    <label for="metodoPago">Método de Pago:</label>
+                    <select id="metodoPago" class="form-control">
+                        <option value="0">💵 Efectivo</option>
+                        <option value="1">💳 Tarjeta</option>
+                        <option value="2">🏦 Transferencia</option>
+                    </select>
+                </div>
+                
+                <button id="btnFacturar" class="btn-facturar">Generar Factura y Liberar Mesa</button>
+            </div>
         </aside>
     </main>
 
