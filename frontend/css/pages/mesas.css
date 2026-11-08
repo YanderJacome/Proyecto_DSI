@@ -278,3 +278,42 @@
 .hidden {
     display: none !important;
 }
+
+/* =========================================
+   BOTONES DE RESERVA EN LAS TARJETAS
+   ========================================= */
+.btn-reserva, .btn-ocupar, .btn-liberar {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+}
+
+.btn-reserva {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+.btn-reserva:hover { background-color: rgba(255, 255, 255, 0.4); }
+
+.acciones-reservada {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.btn-ocupar {
+    background-color: #27ae60;
+    color: white;
+}
+.btn-ocupar:hover { background-color: #219150; }
+
+.btn-liberar {
+    background-color: #c0392b;
+    color: white;
+}
+.btn-liberar:hover { background-color: #96281b; }

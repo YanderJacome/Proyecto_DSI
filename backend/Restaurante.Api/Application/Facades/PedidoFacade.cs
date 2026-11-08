@@ -24,8 +24,8 @@ public class PedidoFacade
         // ... (El mismo código de validación de mesa y productos de la etapa anterior) ...
         var mesa = await _db.Mesas.FindAsync(request.IdMesa);
         if (mesa == null) throw new Exception("La mesa no existe.");
-        if (mesa.Estado != EstadoMesa.Disponible) throw new Exception($"La mesa {mesa.NumeroMesa} no está disponible.");
-
+       if (mesa.Estado == EstadoMesa.Ocupada)
+    throw new Exception($"La mesa {mesa.NumeroMesa} ya está ocupada.");
         decimal total = 0;
         var detalles = new List<DetallePedido>();
 

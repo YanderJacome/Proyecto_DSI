@@ -7,7 +7,12 @@ if (!authStore.isAuthenticated()) window.location.href = '/login.html';
 const user = authStore.getUser();
 if(user) {
     document.getElementById('userName').textContent = `${user.nombre} (${user.rol})`;
-    if (user.rol !== 'Administrador') document.getElementById('navUsuarios').style.display = 'none';
+    
+    // Ocultar opciones según el rol
+    if (user.rol !== 'Administrador') {
+        document.getElementById('navReportes').style.display = 'none'; // <-- FALTABA ESTA LÍNEA
+        document.getElementById('navUsuarios').style.display = 'none';
+    }
 }
 
 document.getElementById('btnLogout').addEventListener('click', () => {

@@ -14,9 +14,15 @@ if (user) {
     }
     if (user.rol !== 'Administrador') {
         document.getElementById('navReportes').style.display = 'none';
-        document.getElementById('navUsuarios').style.display = 'none'; // <-- NUEVA LÍNEA
+        document.getElementById('navUsuarios').style.display = 'none'; 
     }
 }
+
+document.getElementById('btnLogout').addEventListener('click', () => {
+    authStore.logout();
+    window.location.href = '/login.html';
+});
+
 const mesasGrid = document.getElementById('mesasGrid');
 
 async function cargarMesas() {
@@ -41,25 +47,39 @@ function renderizarMesas(mesas) {
         
         const card = document.createElement('div');
         card.className = `mesa-card ${estadoLower}`;
+        
+        let botonesAccion = '';
+        if (mesa.estado === 'Disponible') {
+            botonesAccion = `<button class="btn-reserva" onclick="reservarMesa(event, ${mesa.idMesa})">📅 Reservar</button>`;
+        } else if (mesa.estado === 'Reservada') {
+            botonesAccion = `
+                <div class="acciones-reservada">
+                    <button class="btn-ocupar" onclick="tomarPedido(event, ${mesa.idMesa})">🍽️ Ocupar</button>
+                    <button class="btn-liberar" onclick="liberarReserva(event, ${mesa.idMesa})">❌ Liberar</button>
+                </div>
+            `;
+        }
+
         card.innerHTML = `
             <div class="mesa-numero">${mesa.numeroMesa}</div>
             <div class="mesa-estado">${mesa.estado}</div>
+            ${botonesAccion}
         `;
         
-                card.addEventListener('click', async () => {
+        card.addEventListener('click', async (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+
             if (mesa.estado === 'Disponible') {
                 window.location.href = `/pedidos.html?mesaId=${mesa.idMesa}`;
             } else if (mesa.estado === 'Ocupada') {
                 await abrirModalMesa(mesa);
-            } else {
-                alert(`La mesa ${mesa.numeroMesa} está ${mesa.estado}.`);
             }
         });
+        
         mesasGrid.appendChild(card);
     });
 }
 
-cargarMesas();
 // --- LÓGICA DEL MODAL ---
 const modal = document.getElementById('modalMesa');
 const closeModal = document.getElementById('closeModal');
@@ -82,7 +102,7 @@ async function abrirModalMesa(mesa) {
             return;
         }
 
-                modalPedidosList.innerHTML = pedidos.map(p => `
+        modalPedidosList.innerHTML = pedidos.map(p => `
             <div class="modal-pedido-card">
                 <h4>Pedido #${p.idPedido} - Estado: ${p.estado}</h4>
                 <ul>
@@ -110,8 +130,46 @@ window.cancelarPedido = async (idPedido) => {
         await fetchApi(`/pedidos/${idPedido}/cancelar`, { method: 'POST' });
         alert("Pedido cancelado. La mesa puede haber sido liberada.");
         modal.classList.add('hidden');
-        cargarMesas(); // Recargar el mapa de mesas
+        cargarMesas();
     } catch (error) {
         alert("Error al cancelar: " + error.message);
     }
+}; // <-- LLAVE QUE FALTABA CERRAR
+
+// --- LÓGICA DE RESERVAS ---
+
+window.reservarMesa = async (event, idMesa) => {
+    event.stopPropagation();
+    if (!confirm("¿Desea marcar esta mesa como reservada?")) return;
+    
+    try {
+        await fetchApi(`/mesas/${idMesa}/estado`, {
+            method: 'PATCH',
+            body: JSON.stringify({ nuevoEstado: 2 }) // 2 es "Reservada" en el Enum
+        });
+        cargarMesas();
+    } catch (error) { 
+        alert("Error al reservar: " + error.message); 
+    }
 };
+
+window.liberarReserva = async (event, idMesa) => {
+    event.stopPropagation();
+    try {
+        await fetchApi(`/mesas/${idMesa}/estado`, {
+            method: 'PATCH',
+            body: JSON.stringify({ nuevoEstado: 0 }) // 0 es "Disponible"
+        });
+        cargarMesas();
+    } catch (error) { 
+        alert("Error al liberar: " + error.message); 
+    }
+};
+
+window.tomarPedido = (event, idMesa) => {
+    event.stopPropagation();
+    window.location.href = `/pedidos.html?mesaId=${idMesa}`;
+};
+
+// Arrancar la carga inicial
+cargarMesas();
